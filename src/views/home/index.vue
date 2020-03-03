@@ -8,9 +8,10 @@
     </el-aside>
     <!-- 右侧嵌套一个大容器 -->
     <el-container>
-      <!-- 上面一个顶栏容器 -->
+      <!-- 顶部操作栏 -->
       <el-header>
-        <h1>top</h1>
+        <layout-header></layout-header>
+        <!-- <h1>top</h1> -->
       </el-header>
       <!-- 主要内容容器 -->
       <el-main>
@@ -23,9 +24,11 @@
 <script>
 // 将左侧导航组件引入 注册 使用
 import LayoutAside from '@/components/home/layout-aside'
+import LayoutHeader from '@/components/home/layout-header'
 export default {
   components: {
-    'layout-aside': LayoutAside
+    'layout-aside': LayoutAside,
+    'layout-header': LayoutHeader
   }
 }
 </script>

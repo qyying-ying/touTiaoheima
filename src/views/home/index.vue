@@ -22,14 +22,14 @@
 </template>
 
 <script>
-// 将左侧导航组件引入 注册 使用
-import LayoutAside from '@/components/home/layout-aside'
-import LayoutHeader from '@/components/home/layout-header'
+// // 将左侧导航组件引入 注册 使用
+// import LayoutAside from '@/components/home/layout-aside'
+// import LayoutHeader from '@/components/home/layout-header'
 export default {
-  components: {
-    'layout-aside': LayoutAside,
-    'layout-header': LayoutHeader
-  }
+  // components: {
+  //   'layout-aside': LayoutAside,
+  //   'layout-header': LayoutHeader
+  // }
 }
 </script>
 

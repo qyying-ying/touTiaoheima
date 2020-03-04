@@ -13,9 +13,11 @@
         <layout-header></layout-header>
         <!-- <h1>top</h1> -->
       </el-header>
-      <!-- 主要内容容器 -->
-      <el-main>
-        <h1>medule</h1>
+      <!-- 主要内容容器 el-main默认给加了20px的内边距-->
+      <el-main style="padding: 0">
+        <!-- 这里放置 二级路由容器 -->
+         <router-view>
+         </router-view>
       </el-main>
     </el-container>
   </el-container>

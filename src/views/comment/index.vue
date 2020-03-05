@@ -11,11 +11,16 @@
 <el-table :data="list">
     <!-- 使用el-table-column作为列 -->
     <!-- prop表示显示的字段 -->
-    <el-table-column width="600px" prop='name' label="标题"></el-table-column>
-    <el-table-column prop='name' label="评论状态"></el-table-column>
-    <el-table-column prop='name' label="总评论数"></el-table-column>
-    <el-table-column prop='name' label="粉丝评论数"></el-table-column>
-    <el-table-column prop='name' label="操作"></el-table-column>
+    <el-table-column width="600px" prop='title' label="标题"></el-table-column>
+    <!-- 给el-table-cloumn 一个 formatter属性 用来格式化内容 因为在table中不显示布尔值-->
+    <el-table-column :formatter="formatterBool" prop='comment_status' label="评论状态"></el-table-column>
+    <el-table-column prop='total_comment_count' label="总评论数"></el-table-column>
+    <el-table-column prop='fans_comment_count' label="粉丝评论数"></el-table-column>
+    <el-table-column label="操作">
+      <!-- 可以放组件 -->
+      <el-button size="small" type="text">修改</el-button>
+       <el-button size="small" type="text">关闭评论</el-button>
+    </el-table-column>
 </el-table>
 </el-card>
 </template>
@@ -39,9 +44,23 @@ export default {
       // params 传get参数也就是query参数
       // data 传body参数也就是请求体参数
       }).then(result => {
-        console.log(result)
+        // 将返回结果中的数组给list
+        this.list = result.data.results
       })
+    },
+    // 定义一个格式化的函数
+    formatterBool (row, column, cellValue, index) {
+      // row代表当前的一行数据
+      // cloumn代表当前的列信息
+      // cellValue代表当前单元格的值
+      // index代表当前的索引
+      // 该函数需要返回一个值 用来显示
+      return cellValue ? '正常' : '关闭'
     }
+  },
+  created () {
+    // 在钩子函数中 直接获取数据
+    this.getComment()
   }
 }
 </script>

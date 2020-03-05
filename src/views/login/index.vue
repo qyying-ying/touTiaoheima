@@ -93,7 +93,7 @@ export default {
         }).then(result => {
         // 成功
         // console.log(result.data.data.token)
-          window.localStorage.setItem('user-token', result.data.data.token)
+          window.localStorage.setItem('user-token', result.data.token)
           //  跳转到主页
           this.$router.push('/home')
         }).catch(() => {

@@ -26,6 +26,22 @@ export default {
     return {
       list: []
     }
+  },
+  methods: {
+  // 获取评论数据
+    getComment () {
+      this.$axios({
+        url: '/articles', // 请求地址
+        params: {
+          response_type: 'comment'
+        }
+      // query参数应该在哪个位置传 axios
+      // params 传get参数也就是query参数
+      // data 传body参数也就是请求体参数
+      }).then(result => {
+        console.log(result)
+      })
+    }
   }
 }
 </script>

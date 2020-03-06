@@ -1,6 +1,6 @@
 <template>
-<!-- 用一个el-card组件做主页面 -->
-<el-card>
+<!-- 用一个el-card组件做主页面 v-loading="变量"-->
+<el-card v-loading="loading">
    <!-- 放置一个面包屑组件 slot="header" 表示面包屑会作为具名插槽给card的header部分-->
    <bread-crumb slot="header">
        <template slot="title">
@@ -54,7 +54,8 @@ export default {
         currentPage: 1, // 默认页码是第一个页
         pageSize: 10 // page-size的默认值是10
       },
-      list: []
+      list: [],
+      loading: false // 控制loading遮罩层的显示或者隐藏
     }
   },
   methods: {
@@ -68,6 +69,7 @@ export default {
     },
     // 获取评论数据
     getComment () {
+      this.loading = true // 打开遮罩层
       this.$axios({
         url: '/articles', // 请求地址
         // 接口 如果你不传分页数据 默认查第一页的数据
@@ -84,6 +86,7 @@ export default {
         this.list = result.data.results
         // 在获取完数据后 将 总数赋值给 total
         this.page.total = result.data.total_count // 将总数赋值
+        this.loading = false // 请求完毕后 关闭遮罩层
       })
     },
     // 定义一个格式化的函数

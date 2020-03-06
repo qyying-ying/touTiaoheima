@@ -23,6 +23,11 @@ const routes = [
         // path:'/home/comment', 完整地址
         path: 'comment', // 简写地址
         component: () => import('@/views/comment')// 组件
+      }, {
+        // path: '/home/material' // 二级路由地址
+        path: 'material', // 简写地址 下面要有component
+        component: () => import('@/views/material')
+        // 采用按需加载的---点击素材管理的时候才会请求这个组件，且只请求一次
       }
     ]
     // I在一级路由的路由表下 children配置二级路由表

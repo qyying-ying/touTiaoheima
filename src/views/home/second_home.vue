@@ -24,11 +24,15 @@ export default {
 }
 </script>
 
-<style>
+<style lang='less'>
 .second-home {
   /* calc 计算的意思 在css中计算数值 用法  calc ( 四则运算  ) 变量之间 和运算符之间一定要有空格 */
   height: calc(100vh - 60px);
   background-size: cover;
   background-image: url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583332249924&di=a4cee192c0270b3ac260655bed3375e7&imgtype=0&src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20170207%2F18fcaf503b5c4fd891ff2dc9696723e8_th.png");
+  img {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

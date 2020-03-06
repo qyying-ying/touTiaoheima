@@ -71,7 +71,9 @@ export default {
           url: '/comments/status', // 请求地址
           method: 'put', // 请求类型
           params: {
-            article_id: row.id // 要求参数的文章id
+            article_id: row.id.toString() // 要求参数的文章id 将bignumber转成字符串
+          // 前段传字符串到后端 只要和原数字一致 后端会自动将字符串转成大数字
+          // 只要保证id和传来的id一致就行
           },
           data: {
             // body参数

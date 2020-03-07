@@ -29,14 +29,20 @@
                        <img :src="item.url" alt="">
                    <!-- 图片下面放操作栏 -->
                    <el-row class="operate" type="flex" justify="space-around" align="middle">
-                     <i class="el-icon-star-on"></i>
-                     <i class="el-icon-delete-solid"></i>
+                     <!-- 两个图标注册点击事件 根据数据判断图标的颜色-->
+                     <i @click="collecOrCancel(item)" :style="{color: item.is_collected ? 'red' : 'black'}" class="el-icon-star-on"></i>
+                     <i @click="delMaterial(item)" class="el-icon-delete-solid"></i>
                    </el-row>
                    </el-card>
                </div>
            </el-tab-pane>
            <el-tab-pane label="收藏素材" name="collect">
                <!-- 内容 -->
+              <div class="img-list">
+              <el-card class="img-card" v-for="item in list" :key = "item.id">
+                <img :src="item.url" alt="">
+              </el-card>
+              </div>
            </el-tab-pane>
        </el-tabs>
        <!-- 放置一个公共的分页组件 -->
@@ -72,6 +78,24 @@ export default {
     }
   },
   methods: {
+    // 删除素材的方法
+    delMaterial (row) {},
+    // 取消或者收藏素材
+    collecOrCancel (row) {
+      // 调用收藏和取消收藏接口
+      this.$axios({
+        method: 'put', // 请求类型
+        url: `/user/images/${row.id}`, // 请求地址
+        data: {
+          collect: !row.is_collected // true or false ？取反 因为 收藏 => 取消收藏 没收藏 => 收藏
+        } // 放置body参数
+      }).then(() => {
+        // 成功应该干什么
+        this.getMaterial() // 重新加载数据
+      }).catch(() => {
+        this.$message.error('操作失败')
+      })
+    },
     // 定义一个上传组建的方法
     uploadImg (params) {
     // params.file 就是需要上传的图片文件
@@ -81,7 +105,7 @@ export default {
       //   开始发送上传请求了
       this.$axios({
         url: '/user/images',
-        emthod: 'post',
+        method: 'post',
         // data: data
         data // es6简写
       }).then(() => {

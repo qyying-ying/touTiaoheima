@@ -24,9 +24,9 @@
                <!-- 内容 循环生成页面结构-->
                <div class="img-list">
                    <!-- 采用v-for对list进行数据循环 -->
-                   <el-card class="img-card" v-for="item in list" :key="item.id">
+                   <el-card class="img-card" v-for="(item,index) in list" :key="item.id">
                        <!-- 放置图片  并且复制图片地址-->
-                       <img :src="item.url" alt="">
+                       <img :src="item.url" alt="" @click="selectImg(index)">
                    <!-- 图片下面放操作栏 -->
                    <el-row class="operate" type="flex" justify="space-around" align="middle">
                      <!-- 两个图标注册点击事件 根据数据判断图标的颜色-->
@@ -39,8 +39,8 @@
            <el-tab-pane label="收藏素材" name="collect">
                <!-- 内容 -->
               <div class="img-list">
-              <el-card class="img-card" v-for="item in list" :key = "item.id">
-                <img :src="item.url" alt="">
+              <el-card class="img-card" v-for="(item,index) in list" :key = "item.id">
+                <img :src="item.url" alt=""  @click="selectImg(index)">
               </el-card>
               </div>
            </el-tab-pane>
@@ -59,6 +59,17 @@
        layout="prev, pager, next"
        @current-change="changePage"></el-pagination>
        </el-row>
+       <!-- 放置一个el-dialkog组件 通过visible属性进行true和false设置-->
+       <el-dialog @opened="openEnd" :visible="dialogVisible" @close="dialogVisible = false">
+         <!-- 放置一个走马灯 -->
+         <el-carousel ref="myCarousel" indicator-position="outside" height="400px">
+            <!--放置幻灯片的循环项 根据当前页list循环 -->
+            <el-carousel-item v-for="item in list" :key='item.id'>
+              <!-- 放置图片 -->
+              <img style="width:100%;height:100%" :src="item.url" alt="">
+            </el-carousel-item>
+         </el-carousel>
+       </el-dialog>
   </el-card>
 </template>
 
@@ -74,12 +85,41 @@ export default {
         total: 0,
         pageSize: 8
 
-      }
+      },
+      dialogVisible: false, // 控制显示隐藏
+      clickIndex: -1 // 点击的索引
     }
   },
   methods: {
+    openEnd () {
+      // 这个时候已经打开结束 ref已经有值 可以通过ref进行设置了
+      this.$refs.myCarousel.setActiveItem(this.clickIndex) // 尝试通过这种方式设置index
+    },
+    // 点击图片是调用
+    selectImg (index) {
+      this.clickIndex = index // 将索引赋值
+      this.dialogVisible = true // 打开索引
+    },
     // 删除素材的方法
-    delMaterial (row) {},
+    delMaterial (row) {
+      // 删除之前 应该友好的问候一下 是不是需要删除
+      // confirm也是promise
+      this.$confirm('您确定要删除该图片吗？').then(() => {
+        // 如果确定删除 应该直接调用删除接口
+        this.$axios({
+          method: 'delete', // 请求类型
+          url: `/user/images/${row.id}` // 请求地址
+        }).then(() => {
+        // 成功应该干什么
+          this.getMaterial() // 重新加载数据
+          // 如果删除成功了 可以重新拉取数据 也可以 在前端删除 会在移动端按场景演示
+          // c端场景 如果删除 或者修改数据 不会重新拉取数据 只会在前端修改对应的一条数据
+          // b端场景 可以拉取数据
+        }).catch(() => {
+          this.$message.error('操作失败')
+        })
+      })
+    },
     // 取消或者收藏素材
     collecOrCancel (row) {
       // 调用收藏和取消收藏接口

@@ -9,7 +9,7 @@
     <el-form style="padding-left : 50px">
         <el-form-item label="文章状态：">
             <!-- 放置单选框组 -->
-            <el-radio-group v-model="searchForm.status">
+            <el-radio-group v-model="searchForm.status" @change="changeCondition">
                 <!-- 单选框选项 -->
                 <!-- // 文章状态， 0草稿 1待审核 2审核通过 3审核失败 4已删除 5先定义为全部 -->
                 <el-radio :label="5">全部</el-radio>
@@ -21,15 +21,17 @@
         </el-form-item>
         <el-form-item label="频道类别：">
             <!-- 选择器 -->
-            <el-select placeholder="请选择频道" v-model="searchForm.channel_id">
+            <el-select @change="changeCondition" placeholder="请选择频道" v-model="searchForm.channel_id">
             <!-- 下拉选项 应该通过接口来获取数据 -->
             <!-- el-option是下拉的选项 label是显示值 value是绑定的值 -->
             <el-option v-for="item in channels" :key='item.id' :label='item.name' :value="item.id"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="日期范围：">
-            <!--日期范围选择组件 要设置type属性为 daterange  -->
-            <el-date-picker type='daterange' v-model="searchForm.dateRange"></el-date-picker>
+            <!-- {{ searchForm.dateRange }} -->
+            <!-- 日期范围选择组件 要设置type属性为daterange -->
+            <!-- 显示值和存储值得结构不一致 使用value-format指定绑定值得格式  -->
+            <el-date-picker @change="changeCondition" type='daterange' value-format="yyyy-MM-dd" v-model="searchForm.dateRange"></el-date-picker>
         </el-form-item>
     </el-form>
     <!-- 开始文章的主体结构 flex布局-->
@@ -111,6 +113,20 @@ export default {
     }
   },
   methods: {
+
+    // 改变了条件
+    changeCondition () {
+      // 当触发此方法的时候 表单数据已经变成最新的了
+      // 组装条件
+      const params = {
+        status: this.searchForm.status === 5 ? null : this.searchForm.status, // 5是我们前段虚构的
+        channel_id: this.searchForm.channel_id, // 就是表单的数据
+        begin_pubdate: this.searchForm.dateRange.length ? this.searchForm.dateRange[0] : null,
+        end_pubdate: this.searchForm.dateRange.length > 1 ? this.searchForm.dateRange[1] : null
+      }
+      // 通过接口传入
+      this.getArticles(params)
+    },
     // 获取频道数据
     getChannels () {
       this.$axios({
@@ -121,9 +137,10 @@ export default {
       })
     },
     // 获取文章列表
-    getArticles () {
+    getArticles (params) {
       this.$axios({
-        url: '/articles' // 请求地址
+        url: '/articles', // 请求地址
+        params // es6简写
       }).then(result => {
         this.list = result.data.results // 获取文章列表
       })

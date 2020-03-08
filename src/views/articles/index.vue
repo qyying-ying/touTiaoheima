@@ -38,14 +38,18 @@
     </el-row>
     <!-- 列表内容 -->
     <!-- article-item作为一个循环体 -->
-    <div class="article-item" v-for="item in 100" :key="item">
+    <div class="article-item" v-for="item in list" :key="item.id.toString()">
       <!-- 左侧内容 -->
       <div class="left">
-        <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583678786423&di=4ebc5c89dde9d4e975bde1d1f437126b&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201603%2F16%2F20160316161528_EXZYH.jpeg" alt="">
+        <!-- 设置文章的封面信息 有的有值 有的没值 需要设置一个默认的值 -->
+        <img :src="item.cover.images.length ? item.cover.images[0] : defaultImg" alt="">
         <div class="info">
-          <span>仙剑奇侠传</span>
-          <el-tag class="tag">已发表</el-tag>
-          <span class="date">2020-03-08 10:10:12</span>
+          <span>{{item.title}}</span>
+          <!-- 文章状态 0-草稿 1-待审核 2-审核通过 3-审核失败 4-已删除 -->
+          <!-- 只是改变显示的格式 可以用过滤器 两个过滤器分别处理显示文本和标签类型-->
+          <el-tag :type=" item.status | filterType" class="tag">{{item.status | fillterStatus}}</el-tag>
+          <!-- 发布日期 -->
+          <span class="date">{{item.pubdate}}</span>
         </div>
       </div>
       <!-- 右侧内容 -->
@@ -70,7 +74,40 @@ export default {
         channel_id: null, // 表示没有任何的频道
         dateRange: ''
       },
-      channels: [] // 专门来接收频道的数据
+      channels: [], // 专门来接收频道的数据
+      list: [], // 定义一个list数据接收文章列表
+      defaultImg: require('../../assets/img/timg.jpg') // 地址对应的图片变成了变量 在编译的时候会被拷贝到对应位置
+    }
+  },
+  // 专门处理显示格式的
+  filters: {
+    // 过滤器的第一个参数是value
+    // 文章状态 0草稿 1待审核 2审核通过 3审核失败 4已删除
+    fillterStatus (value) {
+      switch (value) {
+        case 0:
+          return '草稿'
+        case 1:
+          return '待审核'
+        case 2:
+          return '已发表'
+        case 3:
+          return '审核失败'
+      }
+    },
+    // 过滤器除用在 插值表达式中还可以用 v-bind 的表达式中
+    filterType (value) {
+      // 根据当前状态的值 显示不同类型的tag值
+      switch (value) {
+        case 0:
+          return 'warning'
+        case 1:
+          return 'info'
+        case 2:
+          return ''
+        case 3:
+          return 'danger' // 失败错误
+      }
     }
   },
   methods: {
@@ -82,11 +119,20 @@ export default {
         // 获取频道接口返回的数据
         this.channels = result.data.channels
       })
+    },
+    // 获取文章列表
+    getArticles () {
+      this.$axios({
+        url: '/articles' // 请求地址
+      }).then(result => {
+        this.list = result.data.results // 获取文章列表
+      })
     }
   },
   created () {
     //  获取频道数据
     this.getChannels()
+    this.getArticles() // 获取文章列表
   }
 }
 </script>

@@ -34,6 +34,7 @@
         </el-form-item>
         <el-form-item>
             <!-- 放置2个按钮 -->
+            <!-- true false代表是草稿还是发表 -->
             <el-button @click="publish" type="primary">发表</el-button>
             <el-button>存入草稿</el-button>
         </el-form-item>
@@ -59,7 +60,7 @@ export default {
       //  发布表单的校验规则
       publishRules: {
         title: [{ required: true, message: '文章标题内容不能为空', trigger: 'blur' }, {
-          min: 5, max: 30, message: '标题应该在5-30字符之间'
+          min: 5, max: 30, message: '标题应该在5-30字符之间', trigger: 'blur'
         }],
         content: [{ required: true, message: '文章内容不能为空', trigger: 'blur' }],
         channel_id: [{ required: true, message: '频道内容不能为空', trigger: 'blur' }]
@@ -77,7 +78,29 @@ export default {
     // 发布
     publish () {
     // this.refs 来获取 el-form实例 调用validate方法
-      this.$refs.myForm.validate()
+    // 回调形式
+    // promise形式
+    //   this.$refs.myForm.validate(function (isOk) {
+    //     if (isOk) {
+    //       // 调用发布接口
+    //     }
+    //   })
+      this.$refs.myForm.validate().then(() => {
+        // 如果进了then 表示校验成功
+        // 调用发布接口
+        this.$axios({
+          method: 'post',
+          url: '/articles',
+          params: { draft: false }, // query参数
+          data: this.publishForm // 请求体body参数
+        }).then(() => {
+          this.$message.success('发布成功')
+          // 如果发布成功
+          this.$router.push('/home/articles') // 跳转到文章列表
+        }).catch(() => {
+          this.$message.error('发布失败')
+        })
+      })
     }
   },
   created () {

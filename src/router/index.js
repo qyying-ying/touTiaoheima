@@ -31,6 +31,9 @@ const routes = [
       }, {
         path: '/home/articles',
         component: () => import('@/views/articles')
+      }, {
+        path: 'publish', // 发布文章
+        component: () => import('@/views/publish') // 引入组件
       }
     ]
     // I在一级路由的路由表下 children配置二级路由表

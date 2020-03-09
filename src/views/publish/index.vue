@@ -35,8 +35,8 @@
         <el-form-item>
             <!-- 放置2个按钮 -->
             <!-- true false代表是草稿还是发表 -->
-            <el-button @click="publish" type="primary">发表</el-button>
-            <el-button>存入草稿</el-button>
+            <el-button @click="publish(false)" type="primary">发表</el-button>
+            <el-button @click="publish(true)">存入草稿</el-button>
         </el-form-item>
     </el-form>
   </el-card>
@@ -53,7 +53,7 @@ export default {
         content: '', // 文章内容
         cover: {
           type: 0, // -1自动 0 无图 1 单图 3 3图
-          iamges: [] // 字符串数组 对应type -1自动 0 无图 1 单图 3 3图
+          images: [] // 字符串数组 对应type -1自动 0 无图 1 单图 3 3图
         },
         channel_id: null // 频道id
       },
@@ -76,7 +76,7 @@ export default {
       })
     },
     // 发布
-    publish () {
+    publish (draft) {
     // this.refs 来获取 el-form实例 调用validate方法
     // 回调形式
     // promise形式
@@ -91,7 +91,7 @@ export default {
         this.$axios({
           method: 'post',
           url: '/articles',
-          params: { draft: false }, // query参数
+          params: { draft }, // query参数
           data: this.publishForm // 请求体body参数
         }).then(() => {
           this.$message.success('发布成功')

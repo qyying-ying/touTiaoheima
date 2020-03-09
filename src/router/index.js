@@ -32,7 +32,7 @@ const routes = [
         path: '/home/articles',
         component: () => import('@/views/articles')
       }, {
-        path: 'publish', // 发布文章
+        path: 'publish/:articleId?', // 发布文章 加上问号便是 可有可无
         component: () => import('@/views/publish') // 引入组件
       }
     ]

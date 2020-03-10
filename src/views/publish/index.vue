@@ -27,8 +27,10 @@
                 <el-radio :label="0">无图</el-radio>
                 <el-radio :label="-1">自动</el-radio>
             </el-radio-group>
-            {{ publishForm.cover }}
         </el-form-item>
+        <!-- 放置封面组件 -->
+        <!-- 把封面图片传递给子组件 -->
+        <cover-image @selectTwoImg="reveiveImg" :list="publishForm.cover.images"></cover-image>
         <el-form-item label="频道" prop="channel_id">
             <!-- select选择器 -->
             <el-select v-model="publishForm.channel_id" placeholder="请选择频道">
@@ -73,6 +75,14 @@ export default {
     }
   },
   methods: {
+    // 接收cover-image传递过来的数据
+    reveiveImg (url, index) {
+      // 接收到了传递过来的封面数据
+      // 接下来需要更新image数组
+      // 有索引可以改变数据了
+      this.publishForm.cover.images.splice(index, 1, url) // 删除替换元素
+      // splice(索引，要删除的个数，替换的个数)
+    },
     // 改变类型事件
     changeType () {
       // 我们应该根据type的值对 images进行控制

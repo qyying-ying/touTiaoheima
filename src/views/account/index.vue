@@ -8,16 +8,16 @@
       <el-form label-width="100px">
           <!-- 表单域 -->
           <el-form-item label="用户名">
-              <el-input style="width:30%"></el-input>
+              <el-input v-model="formData.name"  style="width:30%"></el-input>
           </el-form-item>
           <el-form-item label="简介">
-              <el-input style="width:30%"></el-input>
+              <el-input v-model="formData.intro" style="width:30%"></el-input>
           </el-form-item>
           <el-form-item label="邮箱">
-              <el-input style="width:30%"></el-input>
+              <el-input v-model="formData.email" style="width:30%"></el-input>
           </el-form-item>
           <el-form-item label="手机号">
-              <el-input style="width:30%"></el-input>
+              <el-input v-model="formData.mobile" style="width:30%"></el-input>
           </el-form-item>
           <el-form-item>
               <el-button type="primary">保存</el-button>
@@ -30,7 +30,30 @@
 
 <script>
 export default {
-
+  data () {
+    return {
+      formData: {
+        name: '',
+        intro: '',
+        photo: '',
+        email: '',
+        mobile: ''
+      }
+    }
+  },
+  methods: {
+    // 获取用户个人资料
+    getUserInfo () {
+      this.$axios({
+        url: '/user/profile'
+      }).then(result => {
+        this.formData = result.data // 将数据赋值给表单数据
+      })
+    }
+  },
+  created () {
+    this.getUserInfo() // 调用方法
+  }
 }
 </script>
 

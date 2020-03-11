@@ -50,6 +50,7 @@
 </template>
 
 <script>
+
 export default {
   data () {
     return {
@@ -71,6 +72,37 @@ export default {
         }],
         content: [{ required: true, message: '文章内容不能为空', trigger: 'blur' }],
         channel_id: [{ required: true, message: '频道内容不能为空', trigger: 'blur' }]
+      }
+    }
+  },
+  // 如果想要捕捉路由参数的变化，我们可以采用watch来监听$route
+  watch: {
+  // watch是监听data中的数据变化
+  // 路由在初始化之后，会把$route也放置在页面中
+    $route: function (to, from) {
+      // 监听$route的变化
+      // to表示新的路由地址对象
+      // from表示新的路由对象
+      console.log(to) // 打印一下to属性
+      // 根据to属性中的params的articleid的变化 来决定 是不是改变数据
+      // 如果有articleid应该获取编辑文章的数据
+      // 如果没有articleid 应该将表单数据设置为空
+      if (to.params.articleId) {
+        // 如果id存在 应该获取文章数据
+        // 获取数据
+        this.getArticleById(to.params.articleId) // 获取文章id
+      } else {
+        // 如果不存在 应该设置表单数据为空
+        // 如果是发布文章 就设置为空对象
+        this.publishForm = {
+          title: '', // 文章标题
+          content: '', // 文章内容
+          cover: {
+            type: 0, // -1自动 0 无图 1 单图 3 3图
+            images: [] // 字符串数组 对应type -1自动 0 无图 1 单图 3 3图
+          },
+          channel_id: null // 频道id
+        }
       }
     }
   },

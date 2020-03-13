@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import eventBus from '@/utils/eventBus' // 公共领域监听
 export default {
   data () {
     return {
@@ -48,19 +49,27 @@ export default {
         window.localStorage.removeItem('user-token') // 删除localstorage中的某个选项
         this.$router.push('/login') // 跳回登录页
       }
+    },
+    getUserInfo () {
+      this.$axios({
+        url: '/user/profile' // 请求地址
+      // headers: {
+      //   Authorization: `Bearer ${token}` // 格式要求 Bearer +token
+      // } // 请求头参数 headers放置请求头参数
+      }).then(result => {
+      // 如果加载成功了 我们要将数据赋值给 userInfo
+        this.userInfo = result.data
+      })
     }
   },
   created () {
     // const token = localStorage.getItem('user-token') // 从兜里拿钥匙 也就是从缓存中取token
     //   获取用户的个人信息
-    this.$axios({
-      url: '/user/profile' // 请求地址
-      // headers: {
-      //   Authorization: `Bearer ${token}` // 格式要求 Bearer +token
-      // } // 请求头参数 headers放置请求头参数
-    }).then(result => {
-      // 如果加载成功了 我们要将数据赋值给 userInfo
-      this.userInfo = result.data
+    this.getUserInfo() // 正常加载
+    eventBus.$on('updateUser', () => {
+      // 如果有人触发了updateUser事件 就会进入到该函数
+      // 重新获取下拉信息即可
+      this.getUserInfo()
     })
   }
 }

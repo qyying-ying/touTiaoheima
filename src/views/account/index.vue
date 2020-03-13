@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import eventBus from '@/utils/eventBus' // 公共领域监听
 export default {
   data () {
     return {
@@ -74,6 +75,8 @@ export default {
           data: this.formData
         }).then(() => {
           this.$message.success('保存用户信息成功')
+          // 广播一个消息 updateuser消息
+          eventBus.$emit('updateUser')
         }).catch(() => {
           this.$message.error('保存用户信息失败')
         })
@@ -92,6 +95,7 @@ export default {
         this.formData.photo = result.data.photo // 拿到新头像地址了 你需要把新地址赋值给当前页面的地址
         // 现在拿到新地址了 但是 头部组件的地址吗没有更新
         // 需要处理非关系型组件之间的传值 eventBus(明天上午讲)  /vuex(移动端第一天讲)
+        eventBus.$emit('updateUser')
       })
     }
   },

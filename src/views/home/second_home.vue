@@ -7,11 +7,109 @@
       <img :src="item" alt="">
     </el-carousel-item>
   </el-carousel>
+  <!-- 放置图标组件 -->
+  <!-- ref -->
+  <el-row type="flex" justify="space-around">
+  <div ref="myChart" class='echarts'></div>
+  <div ref="myChart2" class='echarts'></div>
+  </el-row>
   </div>
 </template>
 
 <script>
+// 引入图标模块
+// 图表本身是用canvas实现的
+import ECharts from 'echarts'
 export default {
+  mounted () {
+    // 进行echart图标的实例化
+    this.myChart = ECharts.init(this.$refs.myChart) // 实例化 得到一个图标的实例化对象
+    this.myChart2 = ECharts.init(this.$refs.myChart2)
+    // this.myChart就是图表对象
+    this.myChart.setOption({
+      tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b}: {c} ({d}%)'
+      },
+      legend: {
+        orient: 'vertical',
+        left: 10,
+        data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+      },
+      series: [
+        {
+          name: '访问来源',
+          type: 'pie',
+          radius: ['50%', '70%'],
+          avoidLabelOverlap: false,
+          label: {
+            normal: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              show: true,
+              textStyle: {
+                fontSize: '30',
+                fontWeight: 'bold'
+              }
+            }
+          },
+          labelLine: {
+            normal: {
+              show: false
+            }
+          },
+          data: [
+            { value: 335, name: '直接访问' },
+            { value: 310, name: '邮件营销' },
+            { value: 234, name: '联盟广告' },
+            { value: 135, name: '视频广告' },
+            { value: 1548, name: '搜索引擎' }
+          ]
+        }
+      ]
+    })
+    this.myChart2.setOption(
+      {
+        color: ['#3398DB'],
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            axisTick: {
+              alignWithLabel: true
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: '直接访问',
+            type: 'bar',
+            barWidth: '60%',
+            data: [10, 52, 200, 334, 390, 330, 220]
+          }
+        ]
+      }
+    )
+  },
   data () {
     return {
       list: [
@@ -34,5 +132,10 @@ export default {
     width: 100%;
     height: 100%;
   }
+  .echarts {
+     width:600px;
+     height: 400px;
+     background-color: skyblue;
+ }
 }
 </style>

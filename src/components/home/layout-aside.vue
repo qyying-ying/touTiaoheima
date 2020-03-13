@@ -1,10 +1,12 @@
 <template>
   <div class="layout-aside">
     <div class="title">
-      <img src="../../assets/img/logo_admin.png" alt="">
+      <!-- 如果img图片是董涛的 需要把地址转变为变量 -->
+      <!-- 如果是折叠 用小图 如果是展开 用大图 -->
+      <img :src="collapse ? smallImg : bigImg" alt="">
     </div>
   <!-- 导航菜单 对菜单开启路由模式:router='true'的简写是router-->
-  <el-menu router background-color="#323745" text-color="#adafb5">
+  <el-menu :collapse="collapse" router background-color="#323745" text-color="#adafb5">
       <!-- 子菜单 -->
       <el-menu-item index='/home'>
           <i class='el-icon-s-home'></i>
@@ -44,7 +46,13 @@
 
 <script>
 export default {
-
+  props: ['collapse'], // 接收父组件传出来的变量
+  data () {
+    return {
+      bigImg: require('../../assets/img/logo_admin.png'),
+      smallImg: require('../../assets/img/toutiao.png')
+    }
+  }
 }
 </script>
 

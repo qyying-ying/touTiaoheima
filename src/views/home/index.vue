@@ -1,10 +1,12 @@
 <template>
   <!-- 先在外面放置一个大容器 因为小容器只能放在到大容器 -->
   <el-container>
-    <el-aside style="width:230px;background:#2e2f32">
+    <!-- 根据折叠状态变成64 -->
+    <el-aside :style="{width: collapse ? '64px' : '230px'}" style="transition: all 0.5s; background:#2e2f32">
       <!-- <h1>左侧</h1> -->
       <!-- 左侧导航组件 -->
-      <layout-aside></layout-aside>
+      <!-- 直接把父组件的状态传给子组件 -->
+      <layout-aside :collapse="collapse"></layout-aside>
     </el-aside>
     <!-- 右侧嵌套一个大容器 -->
     <el-container>
@@ -27,11 +29,24 @@
 // // 将左侧导航组件引入 注册 使用
 // import LayoutAside from '@/components/home/layout-aside'
 // import LayoutHeader from '@/components/home/layout-header'
+import eventBus from '@/utils/eventBus'
 export default {
   // components: {
   //   'layout-aside': LayoutAside,
   //   'layout-header': LayoutHeader
   // }
+  data () {
+    return {
+      collapse: false // 默认是展开状态
+    }
+  },
+  created () {
+    // 切换了折叠的状态
+    eventBus.$on('changeCollapse', () => {
+      //  此时表示 折叠状态一定变了 变成什么了 一定是跟当前的状态相反了
+      this.collapse = !this.collapse // 只要取反 就和 头部的组件的状态对上
+    })
+  }
 }
 </script>
 
